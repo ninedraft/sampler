@@ -75,6 +75,7 @@ var indexesPool = &sync.Pool{
 }
 
 func getIndexes(n int) *indexes {
+	//nolint:errcheck // ignore casting error - we know that we have *indexes
 	ii := indexesPool.Get().(*indexes)
 	ii.values = slices.Grow(ii.values, n)[:n]
 	return ii

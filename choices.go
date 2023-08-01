@@ -19,7 +19,7 @@ func Choices[E any](rnd Rand, items []E, n int) []E {
 // ChoicesAppend returns a random selection of n items from items.
 // Items are appended to dst, which is grown if necessary.
 // Items are not guaranteed to be unique.
-func ChoicesAppend[E any](rnd Rand, dst []E, items []E, n int) []E {
+func ChoicesAppend[E any](rnd Rand, dst, items []E, n int) []E {
 	if n == 0 {
 		return dst
 	}

@@ -1,11 +1,13 @@
-# mylib
+[![Go Reference](https://pkg.go.dev/badge/github.com/ninedraft/sampler.svg)](https://pkg.go.dev/github.com/ninedraft/sampler)
+# sampler
 
-This is a template for a golang library.
+Sampler is a golang library for sampling from a slice of items.
 
-Use [gonew](https://go.dev/blog/gonew) to create a new project:
+## Install
 
-```bash
-gonew github.com/ninedraft/mylib
+```
+go get github.com/ninedraft/sampler
 ```
 
-Don't forget to update LICENSE file with your name and year.
+## License
+APACHE 2.0

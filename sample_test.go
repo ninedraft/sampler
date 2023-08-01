@@ -1,3 +1,4 @@
+// #nosec G404 // ignore weak random number generator in test code
 package sampler_test
 
 import (
