@@ -2,15 +2,19 @@
 package sampler_test
 
 import (
-	"math/rand"
+	"crypto/rand"
+	"encoding/binary"
+	norand "math/rand/v2"
 	"testing"
 
 	"github.com/ninedraft/sampler"
 	"golang.org/x/exp/slices"
 )
 
+const seed = 100
+
 func BenchmarkAppend(b *testing.B) {
-	rnd := rand.New(rand.NewSource(100))
+	rnd := newRnd()
 	items := make([]int, 1000)
 	dst := make([]int, 0, len(items))
 	n := len(items) / 2
@@ -26,12 +30,10 @@ func BenchmarkAppend(b *testing.B) {
 }
 
 func TestSampleAppend(t *testing.T) {
-	const seed = 100
-
 	t.Run("n is 0", func(t *testing.T) {
 		t.Parallel()
 
-		rnd := rand.New(rand.NewSource(seed))
+		rnd := newFixedRnd()
 		dst := []int{1, 2, 3}
 		items := []int{4, 5, 6}
 
@@ -43,7 +45,7 @@ func TestSampleAppend(t *testing.T) {
 	t.Run("dst is nil, n is full shuffle", func(t *testing.T) {
 		t.Parallel()
 
-		rnd := rand.New(rand.NewSource(seed))
+		rnd := newFixedRnd()
 		var dst []int
 		items := []int{1, 2, 3}
 
@@ -56,7 +58,7 @@ func TestSampleAppend(t *testing.T) {
 	t.Run("dst is nil, n is partial shuffle", func(t *testing.T) {
 		t.Parallel()
 
-		rnd := rand.New(rand.NewSource(seed))
+		rnd := newFixedRnd()
 		var dst []int
 		items := []int{1, 2, 3}
 
@@ -69,7 +71,7 @@ func TestSampleAppend(t *testing.T) {
 	t.Run("dst is not nil, n is full shuffle", func(t *testing.T) {
 		t.Parallel()
 
-		rnd := rand.New(rand.NewSource(seed))
+		rnd := newFixedRnd()
 		dst := []int{4, 5, 6}
 		items := []int{1, 2, 3}
 
@@ -83,7 +85,7 @@ func TestSampleAppend(t *testing.T) {
 	t.Run("n is greater than or equal to len(items)", func(t *testing.T) {
 		t.Parallel()
 
-		rnd := rand.New(rand.NewSource(seed))
+		rnd := newFixedRnd()
 
 		dst := []int{1, 2, 3}
 		items := []int{4, 5, 6}
@@ -98,7 +100,7 @@ func TestSampleAppend(t *testing.T) {
 	t.Run("3*n is greater than len(items)", func(t *testing.T) {
 		t.Parallel()
 
-		rnd := rand.New(rand.NewSource(seed))
+		rnd := newFixedRnd()
 
 		dst := []int{1, 2, 3}
 		items := []int{4, 5, 6, 7, 8}
@@ -113,7 +115,7 @@ func TestSampleAppend(t *testing.T) {
 	t.Run("n is less than len(items)", func(t *testing.T) {
 		t.Parallel()
 
-		rnd := rand.New(rand.NewSource(seed))
+		rnd := newFixedRnd()
 		dst := []int{1, 2, 3}
 		items := []int{4, 5, 6, 7, 8, 9}
 
@@ -182,4 +184,21 @@ func assertPrefix[E comparable](t *testing.T, items, want []E) {
 		t.Errorf("\twant %v", want)
 		t.Errorf("\t got %v", head)
 	}
+}
+
+func newRnd() *norand.Rand {
+	var seed [32]byte
+	_, _ = rand.Read(seed[:])
+
+	src := norand.NewChaCha8(seed)
+	return norand.New(src)
+}
+
+// returns a random generator with fixed seed
+func newFixedRnd() *norand.Rand {
+	var s [32]byte
+	binary.PutUvarint(s[:], seed)
+
+	src := norand.NewChaCha8(s)
+	return norand.New(src)
 }

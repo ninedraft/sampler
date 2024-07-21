@@ -7,7 +7,7 @@ func Choice[E any](rnd Rand, items []E) E {
 		panic("sample.Choice called with empty items")
 	}
 
-	return items[rnd.Intn(len(items))]
+	return items[rnd.IntN(len(items))]
 }
 
 // Choices returns a random selection of n items from items.
@@ -33,7 +33,7 @@ func ChoicesAppend[E any](rnd Rand, dst, items []E, n int) []E {
 	}
 
 	for i := 0; i < n; i++ {
-		idx := rnd.Intn(len(items))
+		idx := rnd.IntN(len(items))
 		dst = append(dst, items[idx])
 	}
 
