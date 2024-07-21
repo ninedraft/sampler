@@ -9,7 +9,9 @@ run:
   modules-download-mode: readonly # readonly|release|vendor
 
 output:
-  format: colored-line-number # colored-line-number|line-number|json|tab
+  formats: 
+    - format: colored-line-number
+      path: stdout
   print-issued-lines: true # print lines of code with issue
   print-linter-name: true # print linter name in the end of issue text
 
@@ -20,6 +22,7 @@ issues:
       linters:
         - gocognit
         - gocyclo
+        - gosec
 
   exclude-use-default: false # use default exclude patterns
   max-issues-per-linter: 0 # maximum issues count per one linter
@@ -134,15 +137,13 @@ linters-settings:
     min-confidency: 0
 
   gomnd:
-    settings:
-      mnd:
-        checks: [argument, case, condition, operation, return, assign]
+    checks: [argument, case, condition, operation, return, assign]
 
   govet:
-    check-shadowing: true
     settings: {} # settings per analyzer
     enable-all: false
     enable:
+      - shadow
       - assign # check for useless assignments
       - atomic # check for common mistakes using the sync/atomic package
       - bools # check for common mistakes involving boolean operators

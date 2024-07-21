@@ -40,7 +40,7 @@ func SampleAppend[E any](rnd Rand, dst, items []E, n int) []E {
 
 	set := make(map[int]struct{}, n)
 	for len(set) < n {
-		i := rnd.Intn(len(items))
+		i := rnd.IntN(len(items))
 		if _, ok := set[i]; !ok {
 			set[i] = struct{}{}
 			dst = append(dst, items[i])
